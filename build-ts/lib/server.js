@@ -45,6 +45,7 @@ export default class Server extends EventEmitter {
                 socket._id = uuid.v1();
             // cleanup after the socket gets disconnected
             socket.on("close", () => {
+                this.emit("disconnection", socket._id);
                 this.namespaces[ns].clients.delete(socket._id);
                 for (const event of Object.keys(this.namespaces[ns].events)) {
                     const index = this.namespaces[ns].events[event].indexOf(socket._id);

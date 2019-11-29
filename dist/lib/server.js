@@ -90,6 +90,8 @@ function (_EventEmitter) {
       if (u.query.socket_id) socket._id = u.query.socket_id;else socket._id = _uuid["default"].v1(); // cleanup after the socket gets disconnected
 
       socket.on("close", function () {
+        _this.emit("disconnection", socket._id);
+
         _this.namespaces[ns].clients["delete"](socket._id);
 
         for (var _i = 0, _Object$keys = Object.keys(_this.namespaces[ns].events); _i < _Object$keys.length; _i++) {
