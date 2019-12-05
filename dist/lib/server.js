@@ -82,8 +82,6 @@ function (_EventEmitter) {
     });
 
     _this.wss.on("connection", function (socket, request) {
-      _this.emit("connection", socket, request);
-
       var u = _url["default"].parse(request.url, true);
 
       var ns = u.pathname;
@@ -106,7 +104,11 @@ function (_EventEmitter) {
 
       _this.namespaces[ns].clients.set(socket._id, socket);
 
-      return _this._handleRPC(socket, ns);
+      _this._handleRPC(socket, ns);
+
+      _this.emit("connection", socket, request);
+
+      return;
     });
 
     _this.wss.on("error", function (error) {

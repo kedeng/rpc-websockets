@@ -36,7 +36,6 @@ export default class Server extends EventEmitter {
         this.wss = new WebSocketServer(options);
         this.wss.on("listening", () => this.emit("listening"));
         this.wss.on("connection", (socket, request) => {
-            this.emit("connection", socket, request);
             const u = url.parse(request.url, true);
             const ns = u.pathname;
             if (u.query.socket_id)
@@ -57,7 +56,9 @@ export default class Server extends EventEmitter {
                 this._generateNamespace(ns);
             // store socket and method
             this.namespaces[ns].clients.set(socket._id, socket);
-            return this._handleRPC(socket, ns);
+            this._handleRPC(socket, ns);
+            this.emit("connection", socket, request);
+            return;
         });
         this.wss.on("error", (error) => this.emit("error", error));
     }
